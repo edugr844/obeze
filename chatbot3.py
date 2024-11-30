@@ -3,6 +3,52 @@ from openpyxl import Workbook, load_workbook
 import io
 import tempfile
 
+import requests
+import os
+
+
+# Função para fazer o download do arquivo Fluxo_de_Caixa.xlsx do GitHub
+def download_arquivo_fluxo():
+    # URL do arquivo no seu repositório GitHub (ajuste conforme necessário)
+    url = "https://github.com/edugr844/obeze/blob/main/Fluxo_de_Caixa.xlsx"
+    
+    # Caminho para salvar o arquivo temporariamente no Streamlit
+    caminho_temp = os.path.join("temp", "Fluxo_de_Caixa.xlsx")
+
+    # Baixando o arquivo
+    response = requests.get(url)
+    
+    # Salvando o arquivo localmente
+    with open(caminho_temp, "wb") as f:
+        f.write(response.content)
+    
+    return caminho_temp
+
+# Função para salvar dados no arquivo "Fluxo de Caixa"
+def salvar_dados_excel(segmento, funcionarios, anos_operando, codigo):
+    # Fazendo o download do arquivo "Fluxo_de_Caixa.xlsx" do GitHub
+    caminho_fluxo_original = download_arquivo_fluxo()
+
+    # Carrega o arquivo "Fluxo_de_Caixa" baixado
+    wb = load_workbook(caminho_fluxo_original)
+    ws = wb.active
+
+    # Atualiza as células A1, A2 e A3 com os dados coletados
+    ws['A1'] = f"Segmento: {segmento}"
+    ws['A2'] = f"Funcionários: {funcionarios}"
+    ws['A3'] = f"Anos Operando: {anos_operando}"
+
+    # Cria um nome único para o arquivo com base no código
+    file_name = f"fluxo_de_caixa_{codigo}.xlsx"
+
+    # Salva o arquivo atualizado em um caminho temporário
+    temp_file_path = os.path.join("temp", file_name)
+    wb.save(temp_file_path)
+
+    return temp_file_path
+
+
+
 def salvar_dados_excel(segmento, funcionarios, anos_operando):
     # Cria um arquivo Excel temporário
     temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.xlsx')
@@ -18,7 +64,7 @@ def salvar_dados_excel(segmento, funcionarios, anos_operando):
     return temp_file
 
 def chatbot():
-    st.title("Coleta de Dados - SaaS")
+    st.title("Obezê")
     st.write("Por favor, responda às perguntas abaixo:")
 
     # Perguntas para o usuário
