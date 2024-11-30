@@ -84,7 +84,7 @@ def chatbot():
             temp_file = salvar_dados_excel(segmento, funcionarios, anos_operando)
 
             # Oferece o download do arquivo gerado
-            with open(temp_file_path, "rb") as f:
+            with open(temp_file.name, "rb") as f:
                 st.download_button(
                     label="Baixar Fluxo de Caixa Atualizado",
                     data=f,
