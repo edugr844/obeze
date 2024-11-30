@@ -10,7 +10,7 @@ import os
 # Função para fazer o download do arquivo Fluxo_de_Caixa.xlsx do GitHub
 def download_arquivo_fluxo():
     # URL do arquivo no seu repositório GitHub (ajuste conforme necessário)
-    url = "https://github.com/edugr844/obeze/blob/main/Fluxo_de_Caixa.xlsx"
+    url = "https://github.com/edugr844/obeze/raw/main/Fluxo_de_Caixa.xlsx"
     
     # Caminho para salvar o arquivo temporariamente no Streamlit
     caminho_temp = os.path.join("temp", "Fluxo_de_Caixa.xlsx")
@@ -46,7 +46,6 @@ def salvar_dados_excel(segmento, funcionarios, anos_operando, codigo):
     wb.save(temp_file_path)
 
     return temp_file_path
-
 
 
 def salvar_dados_excel(segmento, funcionarios, anos_operando):
