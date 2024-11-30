@@ -2,10 +2,8 @@ import streamlit as st
 from openpyxl import Workbook, load_workbook
 import io
 import tempfile
-
 import requests
 import os
-
 
 # Função para fazer o download do arquivo Fluxo_de_Caixa.xlsx do GitHub
 def download_arquivo_fluxo():
@@ -25,7 +23,7 @@ def download_arquivo_fluxo():
     return caminho_temp
 
 # Função para salvar dados no arquivo "Fluxo de Caixa"
-def salvar_dados_excel(segmento, funcionarios, anos_operando, codigo):
+def salvar_fluxo_de_caixa(segmento, funcionarios, anos_operando, codigo):
     # Fazendo o download do arquivo "Fluxo_de_Caixa.xlsx" do GitHub
     caminho_fluxo_original = download_arquivo_fluxo()
 
@@ -47,8 +45,8 @@ def salvar_dados_excel(segmento, funcionarios, anos_operando, codigo):
 
     return temp_file_path
 
-
-def salvar_dados_excel(segmento, funcionarios, anos_operando):
+# Função para salvar os dados em um arquivo separado
+def salvar_dados_coletados(segmento, funcionarios, anos_operando):
     # Cria um arquivo Excel temporário
     temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.xlsx')
     wb = Workbook()
@@ -80,17 +78,29 @@ def chatbot():
             st.write(f"- Número de Funcionários: {funcionarios}")
             st.write(f"- Anos Operando: {anos_operando}")
             
-            # Salva os dados no Excel e cria um arquivo temporário
-            temp_file = salvar_dados_excel(segmento, funcionarios, anos_operando)
+            # Salva o Fluxo de Caixa atualizado
+            fluxo_file = salvar_fluxo_de_caixa(segmento, funcionarios, anos_operando, segmento)
 
-            # Oferece o download do arquivo gerado
-            with open(temp_file.name, "rb") as f:
+            # Salva os dados coletados em um novo arquivo
+            dados_file = salvar_dados_coletados(segmento, funcionarios, anos_operando)
+
+            # Oferece o download dos dois arquivos
+            with open(fluxo_file, "rb") as f_fluxo:
                 st.download_button(
                     label="Baixar Fluxo de Caixa Atualizado",
-                    data=f,
+                    data=f_fluxo,
                     file_name=f"fluxo_de_caixa_{segmento}.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
+
+            with open(dados_file.name, "rb") as f_dados:
+                st.download_button(
+                    label="Baixar Dados Coletados",
+                    data=f_dados,
+                    file_name=f"dados_coletados_{segmento}.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
+
         else:
             st.error("Por favor, preencha todas as informações!")
 
